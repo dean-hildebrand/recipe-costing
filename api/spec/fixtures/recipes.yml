@@ -1,0 +1,16 @@
+risotto:
+  name: Parmesan Risotto
+  servings: 4
+  menu_price_cents: 1850
+  notes: Toast rice, add hot stock gradually, finish with butter and parmesan.
+
+salmon_lemon_butter:
+  name: Pan-seared Salmon, Lemon Butter
+  servings: 2
+  menu_price_cents: 2400
+
+# No menu price (allowed) and no ingredient lines.
+staff_meal:
+  name: Staff Meal
+  servings: 1
+  menu_price_cents:

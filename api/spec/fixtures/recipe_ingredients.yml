@@ -1,0 +1,43 @@
+# Units must match the ingredient's dimension (see Units.compatible?).
+
+risotto_rice:
+  recipe: risotto
+  ingredient: arborio_rice
+  quantity: 320
+  unit: g
+
+risotto_stock:
+  recipe: risotto
+  ingredient: chicken_stock
+  quantity: 1.2
+  unit: l
+
+risotto_butter:
+  recipe: risotto
+  ingredient: butter
+  quantity: 60
+  unit: g
+
+risotto_parmesan:
+  recipe: risotto
+  ingredient: parmesan
+  quantity: 80
+  unit: g
+
+salmon_fillet:
+  recipe: salmon_lemon_butter
+  ingredient: salmon
+  quantity: 360
+  unit: g
+
+salmon_butter:
+  recipe: salmon_lemon_butter
+  ingredient: butter
+  quantity: 40
+  unit: g
+
+salmon_lemon:
+  recipe: salmon_lemon_butter
+  ingredient: lemons
+  quantity: 1
+  unit: each

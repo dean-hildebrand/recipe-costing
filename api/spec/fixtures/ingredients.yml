@@ -1,0 +1,52 @@
+# Prices in cents. One ingredient per unit dimension (mass, volume, count),
+# plus one with yield below 100% for trim/waste calculations.
+
+arborio_rice:
+  name: Arborio rice
+  purchase_quantity: 1
+  purchase_unit: kg
+  purchase_price_cents: 390
+  yield_percent: 100
+
+chicken_stock:
+  name: Chicken stock
+  purchase_quantity: 5
+  purchase_unit: l
+  purchase_price_cents: 950
+  yield_percent: 100
+
+butter:
+  name: Unsalted butter
+  purchase_quantity: 1
+  purchase_unit: kg
+  purchase_price_cents: 950
+  yield_percent: 100
+
+parmesan:
+  name: Parmigiano Reggiano
+  purchase_quantity: 1
+  purchase_unit: kg
+  purchase_price_cents: 2400
+  yield_percent: 95
+
+salmon:
+  name: Salmon fillet, skin-on
+  purchase_quantity: 1
+  purchase_unit: kg
+  purchase_price_cents: 2600
+  yield_percent: 88
+
+lemons:
+  name: Lemons
+  purchase_quantity: 20
+  purchase_unit: each
+  purchase_price_cents: 600
+  yield_percent: 100
+
+# Not used by any recipe, so it can be deleted (restrict_with_error doesn't fire).
+sea_salt:
+  name: Sea salt
+  purchase_quantity: 1
+  purchase_unit: kg
+  purchase_price_cents: 120
+  yield_percent: 100
