@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get "units" => "units#index", as: :units
-      resources :ingredients, only: [:index, :show, :create, :update, :destroy]
-      resources :recipes, only: [:index, :show, :create, :update, :destroy] do
+      resources :ingredients, only: [ :index, :show, :create, :update, :destroy ]
+      resources :recipes, only: [ :index, :show, :create, :update, :destroy ] do
         post :preview, on: :collection
       end
     end
