@@ -7,8 +7,9 @@ module Units
   }.freeze
 
   UNIT_CONVERSION_FACTORS = {
-    "g" => 1.0, "kg" => 1000.0,
-    "ml" => 1.0, "l" => 1000.0
+    "g" => 1, "kg" => 1000,
+    "ml" => 1, "l" => 1000,
+    "each" => 1
   }.freeze
 
   ALL = DIMENSIONS.keys.freeze
@@ -21,6 +22,6 @@ module Units
     factor = UNIT_CONVERSION_FACTORS[unit]
     raise ArgumentError, "Unknown unit: #{unit}" unless factor
 
-    quantity * factor
+    BigDecimal(quantity.to_s) * factor
   end
 end

@@ -7,6 +7,10 @@ class RecipeIngredient < ApplicationRecord
   validates :unit, inclusion: { in: Units::ALL }
   validate :unit_compatible_with_ingredient
 
+  def cost
+    ingredient.cost_per_base_unit * Units.to_base_unit(quantity, unit)
+  end
+
   private
 
   def unit_compatible_with_ingredient
