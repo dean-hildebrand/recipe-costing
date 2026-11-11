@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Environment files
+.env*
+!.env.example
+
+# Editors
+.idea/
+.vscode/
