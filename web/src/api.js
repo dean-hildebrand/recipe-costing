@@ -32,3 +32,5 @@ async function request(path, { method = 'GET', body } = {}) {
 /** @returns {Promise<RecipeSummary[]>} */
 export const getRecipes = () => request('/recipes')
 export const getRecipe = (id) => request(`/recipes/${id}`)
+
+export const getIngredients = () => request('/ingredients')
