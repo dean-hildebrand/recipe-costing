@@ -3,7 +3,7 @@
 Recipe cost and yield calculator. Track ingredient purchase prices, build recipes from them, and see plate cost, food cost % and margin per dish.
 
 - `api/`: Rails 8.1 API, PostgreSQL 18
-- `web/`: React + TypeScript (Vite)
+- `web/`: React (Vite)
 
 ## Setup
 
