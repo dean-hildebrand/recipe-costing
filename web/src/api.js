@@ -34,3 +34,7 @@ export const getRecipes = () => request('/recipes')
 export const getRecipe = (id) => request(`/recipes/${id}`)
 
 export const getIngredients = () => request('/ingredients')
+
+// POST Ingredient
+export const createIngredient = (ingredient) =>
+  request('/ingredients', { method: 'POST', body: ingredient })

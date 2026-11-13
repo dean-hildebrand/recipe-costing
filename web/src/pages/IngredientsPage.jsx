@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { getIngredients } from "../api"
 import IngredientsTable from "../components/IngredientsTable"
+import IngredientForm from "../components/IngredientForm"
 
 const IngredientsPage = () => {
   const [ingredients, setIngredients] = useState(null)
@@ -18,10 +19,22 @@ const IngredientsPage = () => {
     getIngredientsCall()
   }, [])
 
+  const handleIngredientCreated = (newIngredient) => {
+    setIngredients(
+      (prev) =>
+        [...prev, newIngredient].sort((a, b) => a.name.localeCompare(b.name)), // sort to add in correct position in the table
+    )
+  }
+
   if (error) return <p>Couldn't load ingredients: {error.message}</p>
   if (!ingredients) return <p>Loading...</p>
 
-  return <IngredientsTable ingredients={ingredients} />
+  return (
+    <>
+      <IngredientForm onSaved={handleIngredientCreated} />
+      <IngredientsTable ingredients={ingredients} />
+    </>
+  )
 }
 
 export default IngredientsPage
