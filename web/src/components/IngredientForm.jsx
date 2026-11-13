@@ -52,46 +52,56 @@ const IngredientForm = ({ onSaved }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <label>Ingredient Name:</label>
-        <input name="name" value={formData.name} onChange={handleChange} />
+        <label>
+          Ingredient Name:
+          <input name="name" value={formData.name} onChange={handleChange} />
+        </label>
         {errors.name && <p>{errors.name.join(", ")}</p>}
-        <label>Unit:</label>
-        <select
-          name="purchase_unit"
-          value={formData.purchase_unit}
-          onChange={handleChange}
-        >
-          <option value="g">g</option>
-          <option value="kg">kg</option>
-          <option value="ml">ml</option>
-          <option value="l">l</option>
-          <option value="each">each</option>
-        </select>
+        <label>
+          Unit:
+          <select
+            name="purchase_unit"
+            value={formData.purchase_unit}
+            onChange={handleChange}
+          >
+            <option value="g">g</option>
+            <option value="kg">kg</option>
+            <option value="ml">ml</option>
+            <option value="l">l</option>
+            <option value="each">each</option>
+          </select>
+        </label>
         {errors.purchase_unit && <p>{errors.purchase_unit.join(", ")}</p>}
-        <label>Purchase Price:</label>
-        <input
-          name="purchase_price"
-          value={formData.purchase_price}
-          onChange={handleChange}
-        />
+        <label>
+          Purchase Price:
+          <input
+            name="purchase_price"
+            value={formData.purchase_price}
+            onChange={handleChange}
+          />
+        </label>
         {errors.purchase_price_cents && (
           <p>{errors.purchase_price_cents.join(", ")}</p>
         )}
-        <label>Quantity:</label>
-        <input
-          name="purchase_quantity"
-          value={formData.purchase_quantity}
-          onChange={handleChange}
-        />
+        <label>
+          Quantity:
+          <input
+            name="purchase_quantity"
+            value={formData.purchase_quantity}
+            onChange={handleChange}
+          />
+        </label>
         {errors.purchase_quantity && (
           <p>{errors.purchase_quantity.join(", ")}</p>
         )}
-        <label>Yield Percentage:</label>
-        <input
-          name="yield_percent"
-          value={formData.yield_percent}
-          onChange={handleChange}
-        />
+        <label>
+          Yield Percentage:
+          <input
+            name="yield_percent"
+            value={formData.yield_percent}
+            onChange={handleChange}
+          />
+        </label>
         {errors.yield_percent && <p>{errors.yield_percent.join(", ")}</p>}
         <button type="submit" disabled={submitting}>
           Add Ingredient
