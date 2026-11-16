@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { getIngredients } from "../api"
+import { deleteIngredient, getIngredients } from "../api"
 import IngredientsTable from "../components/IngredientsTable"
 import IngredientForm from "../components/IngredientForm"
 
 const IngredientsPage = () => {
   const [ingredients, setIngredients] = useState(null)
   const [error, setError] = useState(null)
+  const [deleteError, setDeleteError] = useState(null)
 
   useEffect(() => {
     const getIngredientsCall = async () => {
@@ -26,13 +27,34 @@ const IngredientsPage = () => {
     )
   }
 
+  const handleIngredientDelete = async (ingredient) => {
+    const { id } = ingredient
+    setDeleteError(null)
+    try {
+      await deleteIngredient(id)
+      setIngredients((prev) => prev.filter((i) => i.id !== id))
+    } catch (e) {
+      const messages = Object.values(e.errors ?? {}).flat()
+      setDeleteError({
+        id,
+        message: messages.length
+          ? messages.join(", ")
+          : `Couldn't delete ${ingredient.name} (${e.status ?? e.message})`,
+      })
+    }
+  }
+
   if (error) return <p>Couldn't load ingredients: {error.message}</p>
   if (!ingredients) return <p>Loading...</p>
 
   return (
     <>
       <IngredientForm onSaved={handleIngredientCreated} />
-      <IngredientsTable ingredients={ingredients} />
+      <IngredientsTable
+        ingredients={ingredients}
+        handleDelete={handleIngredientDelete}
+        deleteError={deleteError}
+      />
     </>
   )
 }

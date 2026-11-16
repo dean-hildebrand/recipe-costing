@@ -30,11 +30,14 @@ async function request(path, { method = 'GET', body } = {}) {
  */
 
 /** @returns {Promise<RecipeSummary[]>} */
+
+// Recipe endpoints
 export const getRecipes = () => request('/recipes')
 export const getRecipe = (id) => request(`/recipes/${id}`)
 
+// Ingredient endpoints
 export const getIngredients = () => request('/ingredients')
-
-// POST Ingredient
 export const createIngredient = (ingredient) =>
   request('/ingredients', { method: 'POST', body: ingredient })
+export const deleteIngredient = (id) =>
+  request(`/ingredients/${id}`, { method: 'DELETE' })

@@ -1,6 +1,6 @@
 import IngredientTableRow from "./IngredientTableRow"
 
-const IngredientsTable = ({ ingredients }) => {
+const IngredientsTable = ({ ingredients, handleDelete, deleteError }) => {
   return (
     <>
       <div>
@@ -12,11 +12,19 @@ const IngredientsTable = ({ ingredients }) => {
               <th>Unit</th>
               <th>Price</th>
               <th>Yield Percent</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {ingredients.map((ingredient) => (
-              <IngredientTableRow key={ingredient.id} ingredient={ingredient} />
+              <IngredientTableRow
+                key={ingredient.id}
+                ingredient={ingredient}
+                handleDelete={handleDelete}
+                deleteError={
+                  deleteError?.id === ingredient.id ? deleteError.message : null
+                }
+              />
             ))}
           </tbody>
         </table>
