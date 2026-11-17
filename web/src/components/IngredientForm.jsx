@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { createIngredient } from "../api"
+import { createIngredient, updateIngredient } from "../api"
 import { eurosToCents, centsToEuros } from "../format"
 
 const EMPTY_FORM = {
@@ -29,19 +29,23 @@ const toPayload = ({ purchase_price, ...rest }) => ({
   purchase_price_cents: eurosToCents(purchase_price),
 })
 
-const IngredientForm = ({ onSaved, ingredientToEdit }) => {
+const IngredientForm = ({
+  onSaved,
+  ingredientToEdit,
+  successMessage,
+  setSuccessMessage,
+}) => {
   const [formData, setFormData] = useState(() =>
     ingredientToEdit ? toFormData(ingredientToEdit) : EMPTY_FORM,
   )
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
-  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     if (!successMessage) return
     const id = setTimeout(() => setSuccessMessage(null), 3000)
     return () => clearTimeout(id)
-  }, [successMessage])
+  }, [successMessage, setSuccessMessage])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -54,10 +58,17 @@ const IngredientForm = ({ onSaved, ingredientToEdit }) => {
     setErrors({})
     setSuccessMessage(null)
     try {
-      const result = await createIngredient(toPayload(formData))
+      let result
+      if (!ingredientToEdit) {
+        result = await createIngredient(toPayload(formData))
+        setSuccessMessage(`Added ${result.name}`)
+      } else {
+        const payload = toPayload(formData)
+        result = await updateIngredient(ingredientToEdit.id, payload)
+        setSuccessMessage(`Updated ${result.name}`)
+      }
       onSaved(result)
       setFormData(EMPTY_FORM)
-      setSuccessMessage(`Added ${result.name}`)
     } catch (error) {
       setErrors(error.errors ?? { base: [error.message] })
     } finally {
@@ -120,7 +131,7 @@ const IngredientForm = ({ onSaved, ingredientToEdit }) => {
         </label>
         {errors.yield_percent && <p>{errors.yield_percent.join(", ")}</p>}
         <button type="submit" disabled={submitting}>
-          Add Ingredient
+          {ingredientToEdit ? "Update Ingredient" : "Add Ingredient"}
         </button>
         {errors.base && <p>{errors.base.join(", ")}</p>}
         {successMessage && <p role="status">{successMessage}</p>}
