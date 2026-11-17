@@ -1,4 +1,4 @@
-import { formatCents } from "../format"
+import { formatCents } from "../../format"
 import IngredientActions from "./IngredientActions"
 
 const IngredientTableRow = ({

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { deleteIngredient, getIngredients, getUnits } from "../api"
-import IngredientsTable from "../components/IngredientsTable"
-import IngredientForm from "../components/IngredientForm"
+import IngredientsTable from "../components/ingredients/IngredientsTable"
+import IngredientForm from "../components/ingredients/IngredientForm"
 
 const IngredientsPage = () => {
   const [ingredients, setIngredients] = useState(null)

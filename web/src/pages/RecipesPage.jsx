@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { getRecipes } from "../api"
-import RecipesTable from "../components/RecipesTable"
+import RecipesTable from "../components/recipes/RecipesTable"
 
 const RecipePage = () => {
   const [recipes, setRecipes] = useState(null)

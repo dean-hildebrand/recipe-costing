@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { createIngredient, updateIngredient } from "../api"
-import { eurosToCents, centsToEuros } from "../format"
+import { createIngredient, updateIngredient } from "../../api"
+import { eurosToCents, centsToEuros } from "../../format"
 
 const EMPTY_FORM = {
   name: "",
