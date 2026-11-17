@@ -56,6 +56,36 @@ RSpec.describe Ingredient, type: :model do
       expect(ingredient).not_to be_valid
       expect(ingredient.errors[:purchase_unit]).to be_present
     end
+
+    # Recipe lines convert within a dimension ONLY (g <-> kg)
+    # prevent this change from miscosting every recipe using the ingredient.
+    context "when recipes use the ingredient" do
+      it "can change to another unit of the same dimension" do
+        ingredient.purchase_unit = "g"
+        expect(ingredient).to be_valid
+      end
+
+      it "can't change to a unit of another dimension" do
+        ingredient.purchase_unit = "each"
+        expect(ingredient).not_to be_valid
+        expect(ingredient.errors[:purchase_unit])
+          .to include("can't change from kg to each while used in Parmesan Risotto")
+      end
+
+      it "names every recipe that uses it" do
+        butter = ingredients(:butter)
+        butter.purchase_unit = "l"
+        expect(butter).not_to be_valid
+        expect(butter.errors[:purchase_unit])
+          .to include("can't change from kg to l while used in Pan-seared Salmon, Lemon Butter, Parmesan Risotto")
+      end
+    end
+
+    it "can change dimension when no recipe uses the ingredient" do
+      salt = ingredients(:sea_salt)
+      salt.purchase_unit = "each"
+      expect(salt).to be_valid
+    end
   end
 
   describe "purchase_price_cents" do
