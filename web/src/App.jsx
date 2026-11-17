@@ -8,8 +8,18 @@ function App() {
   return (
     <>
       <nav>
-        <button onClick={() => setPage("recipes")}>Recipes</button>
-        <button onClick={() => setPage("ingredients")}>Ingredients</button>
+        <button
+          className={page === "recipes" ? "active" : ""}
+          onClick={() => setPage("recipes")}
+        >
+          Recipes
+        </button>
+        <button
+          className={page === "ingredients" ? "active" : ""}
+          onClick={() => setPage("ingredients")}
+        >
+          Ingredients
+        </button>
       </nav>
       {page === "recipes" ? <RecipesPage /> : <IngredientsPage />}
     </>

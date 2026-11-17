@@ -6,13 +6,27 @@ import { createIngredient } from "../../api"
 
 vi.mock("../../api")
 
+const units = {
+  g: "mass",
+  kg: "mass",
+  ml: "volume",
+  l: "volume",
+  each: "count",
+}
+
 beforeEach(() => vi.resetAllMocks())
 
 describe("IngredientForm", () => {
   it("sends the price in cents", async () => {
     createIngredient.mockResolvedValue({ id: 1, name: "Butter" })
     const user = userEvent.setup()
-    render(<IngredientForm onSaved={vi.fn()} />)
+    render(
+      <IngredientForm
+        onSaved={vi.fn()}
+        setSuccessMessage={vi.fn()}
+        units={units}
+      />,
+    )
 
     await user.type(screen.getByLabelText(/name/i), "Butter")
     await user.type(screen.getByLabelText(/price/i), "9.50")
@@ -28,7 +42,13 @@ describe("IngredientForm", () => {
       errors: { name: ["has already been taken"] },
     })
     const user = userEvent.setup()
-    render(<IngredientForm onSaved={vi.fn()} />)
+    render(
+      <IngredientForm
+        onSaved={vi.fn()}
+        setSuccessMessage={vi.fn()}
+        units={units}
+      />,
+    )
 
     await user.click(screen.getByRole("button", { name: /add/i }))
 

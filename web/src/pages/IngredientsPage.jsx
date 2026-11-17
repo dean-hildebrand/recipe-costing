@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { deleteIngredient, getIngredients } from "../api"
+import { deleteIngredient, getIngredients, getUnits } from "../api"
 import IngredientsTable from "../components/IngredientsTable"
 import IngredientForm from "../components/IngredientForm"
 
@@ -9,17 +9,22 @@ const IngredientsPage = () => {
   const [deleteError, setDeleteError] = useState(null)
   const [editing, setEditing] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const [units, setUnits] = useState(null)
 
   useEffect(() => {
-    const getIngredientsCall = async () => {
+    const load = async () => {
       try {
-        const results = await getIngredients()
-        setIngredients(results)
+        const [ingredients, units] = await Promise.all([
+          getIngredients(),
+          getUnits(),
+        ])
+        setIngredients(ingredients)
+        setUnits(units)
       } catch (e) {
         setError(e)
       }
     }
-    getIngredientsCall()
+    load()
   }, [])
 
   const handleIngredientActions = (ingredient) => {
@@ -58,7 +63,7 @@ const IngredientsPage = () => {
   }
 
   if (error) return <p>Couldn't load ingredients: {error.message}</p>
-  if (!ingredients) return <p>Loading...</p>
+  if (!ingredients || !units) return <p>Loading...</p>
 
   return (
     <>
@@ -67,6 +72,7 @@ const IngredientsPage = () => {
         ingredientToEdit={editing}
         successMessage={successMessage}
         setSuccessMessage={setSuccessMessage}
+        units={units}
         key={editing?.id ?? "new"}
       />
       <IngredientsTable
