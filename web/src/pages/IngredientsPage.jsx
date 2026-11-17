@@ -7,6 +7,7 @@ const IngredientsPage = () => {
   const [ingredients, setIngredients] = useState(null)
   const [error, setError] = useState(null)
   const [deleteError, setDeleteError] = useState(null)
+  const [editing, setEditing] = useState(null)
 
   useEffect(() => {
     const getIngredientsCall = async () => {
@@ -25,6 +26,10 @@ const IngredientsPage = () => {
       (prev) =>
         [...prev, newIngredient].sort((a, b) => a.name.localeCompare(b.name)), // sort to add in correct position in the table
     )
+  }
+
+  const handleIngredientEdit = async (ingredient) => {
+    setEditing(ingredient)
   }
 
   const handleIngredientDelete = async (ingredient) => {
@@ -49,11 +54,16 @@ const IngredientsPage = () => {
 
   return (
     <>
-      <IngredientForm onSaved={handleIngredientCreated} />
+      <IngredientForm
+        onSaved={handleIngredientCreated}
+        ingredientToEdit={editing}
+        key={editing?.id ?? "new"}
+      />
       <IngredientsTable
         ingredients={ingredients}
         handleDelete={handleIngredientDelete}
         deleteError={deleteError}
+        handleEdit={handleIngredientEdit}
       />
     </>
   )

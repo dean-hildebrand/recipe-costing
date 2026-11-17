@@ -1,10 +1,8 @@
-const IngredientActions = ({ ingredient, handleDelete }) => {
+const IngredientActions = ({ ingredient, handleDelete, handleEdit }) => {
   return (
     <div>
       <button onClick={() => handleDelete(ingredient)}>Delete</button>
-      <button onClick={() => console.log("Editing ingredient", ingredient.id)}>
-        Edit
-      </button>
+      <button onClick={() => handleEdit(ingredient)}>Edit</button>
     </div>
   )
 }

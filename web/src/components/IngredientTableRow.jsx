@@ -1,7 +1,12 @@
 import { formatCents } from "../format"
 import IngredientActions from "./IngredientActions"
 
-const IngredientTableRow = ({ ingredient, handleDelete, deleteError }) => {
+const IngredientTableRow = ({
+  ingredient,
+  handleDelete,
+  deleteError,
+  handleEdit,
+}) => {
   return (
     <>
       <tr>
@@ -14,6 +19,7 @@ const IngredientTableRow = ({ ingredient, handleDelete, deleteError }) => {
           <IngredientActions
             ingredient={ingredient}
             handleDelete={handleDelete}
+            handleEdit={handleEdit}
           />
         </td>
       </tr>

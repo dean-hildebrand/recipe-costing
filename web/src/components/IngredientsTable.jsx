@@ -1,6 +1,11 @@
 import IngredientTableRow from "./IngredientTableRow"
 
-const IngredientsTable = ({ ingredients, handleDelete, deleteError }) => {
+const IngredientsTable = ({
+  ingredients,
+  handleDelete,
+  deleteError,
+  handleEdit,
+}) => {
   return (
     <>
       <div>
@@ -21,6 +26,7 @@ const IngredientsTable = ({ ingredients, handleDelete, deleteError }) => {
                 key={ingredient.id}
                 ingredient={ingredient}
                 handleDelete={handleDelete}
+                handleEdit={handleEdit}
                 deleteError={
                   deleteError?.id === ingredient.id ? deleteError.message : null
                 }

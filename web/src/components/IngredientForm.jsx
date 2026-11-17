@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { createIngredient } from "../api"
-import { eurosToCents } from "../format"
+import { eurosToCents, centsToEuros } from "../format"
 
 const EMPTY_FORM = {
   name: "",
@@ -10,8 +10,29 @@ const EMPTY_FORM = {
   yield_percent: "100",
 }
 
-const IngredientForm = ({ onSaved }) => {
-  const [formData, setFormData] = useState(EMPTY_FORM)
+const toFormData = ({
+  name,
+  purchase_unit,
+  purchase_price_cents,
+  purchase_quantity,
+  yield_percent,
+}) => ({
+  name,
+  purchase_unit,
+  purchase_price: centsToEuros(purchase_price_cents),
+  purchase_quantity,
+  yield_percent,
+})
+
+const toPayload = ({ purchase_price, ...rest }) => ({
+  ...rest,
+  purchase_price_cents: eurosToCents(purchase_price),
+})
+
+const IngredientForm = ({ onSaved, ingredientToEdit }) => {
+  const [formData, setFormData] = useState(() =>
+    ingredientToEdit ? toFormData(ingredientToEdit) : EMPTY_FORM,
+  )
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState(null)
@@ -21,11 +42,6 @@ const IngredientForm = ({ onSaved }) => {
     const id = setTimeout(() => setSuccessMessage(null), 3000)
     return () => clearTimeout(id)
   }, [successMessage])
-
-  const toPayload = ({ purchase_price, ...rest }) => ({
-    ...rest,
-    purchase_price_cents: eurosToCents(purchase_price),
-  })
 
   const handleChange = (e) => {
     const { name, value } = e.target
