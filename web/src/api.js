@@ -31,6 +31,8 @@ async function request(path, { method = 'GET', body } = {}) {
 
 /** @returns {Promise<RecipeSummary[]>} */
 
+export const getUnits = () => request('/units')
+
 // Recipe endpoints
 export const getRecipes = () => request('/recipes')
 export const getRecipe = (id) => request(`/recipes/${id}`)
@@ -43,7 +45,7 @@ export const deleteIngredient = (id) =>
   request(`/ingredients/${id}`, { method: 'DELETE' })
 export const updateIngredient = (id, ingredient) => {
   return request(`/ingredients/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: ingredient,
   })
 }

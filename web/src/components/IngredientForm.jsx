@@ -34,6 +34,7 @@ const IngredientForm = ({
   ingredientToEdit,
   successMessage,
   setSuccessMessage,
+  units,
 }) => {
   const [formData, setFormData] = useState(() =>
     ingredientToEdit ? toFormData(ingredientToEdit) : EMPTY_FORM,
@@ -83,7 +84,7 @@ const IngredientForm = ({
           Ingredient Name:
           <input name="name" value={formData.name} onChange={handleChange} />
         </label>
-        {errors.name && <p>{errors.name.join(", ")}</p>}
+        {errors.name && <p className="field-error">{errors.name.join(", ")}</p>}
         <label>
           Unit:
           <select
@@ -91,14 +92,16 @@ const IngredientForm = ({
             value={formData.purchase_unit}
             onChange={handleChange}
           >
-            <option value="g">g</option>
-            <option value="kg">kg</option>
-            <option value="ml">ml</option>
-            <option value="l">l</option>
-            <option value="each">each</option>
+            {Object.keys(units).map((unit) => (
+              <option key={unit} value={unit}>
+                {unit}
+              </option>
+            ))}
           </select>
         </label>
-        {errors.purchase_unit && <p>{errors.purchase_unit.join(", ")}</p>}
+        {errors.purchase_unit && (
+          <p className="field-error">{errors.purchase_unit.join(", ")}</p>
+        )}
         <label>
           Purchase Price:
           <input
@@ -108,7 +111,9 @@ const IngredientForm = ({
           />
         </label>
         {errors.purchase_price_cents && (
-          <p>{errors.purchase_price_cents.join(", ")}</p>
+          <p className="field-error">
+            {errors.purchase_price_cents.join(", ")}
+          </p>
         )}
         <label>
           Quantity:
@@ -119,7 +124,7 @@ const IngredientForm = ({
           />
         </label>
         {errors.purchase_quantity && (
-          <p>{errors.purchase_quantity.join(", ")}</p>
+          <p className="field-error">{errors.purchase_quantity.join(", ")}</p>
         )}
         <label>
           Yield Percentage:
@@ -129,11 +134,13 @@ const IngredientForm = ({
             onChange={handleChange}
           />
         </label>
-        {errors.yield_percent && <p>{errors.yield_percent.join(", ")}</p>}
+        {errors.yield_percent && (
+          <p className="field-error">{errors.yield_percent.join(", ")}</p>
+        )}
         <button type="submit" disabled={submitting}>
           {ingredientToEdit ? "Update Ingredient" : "Add Ingredient"}
         </button>
-        {errors.base && <p>{errors.base.join(", ")}</p>}
+        {errors.base && <p className="field-error">{errors.base.join(", ")}</p>}
         {successMessage && <p role="status">{successMessage}</p>}
       </form>
     </div>

@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import IngredientsPage from "../../pages/IngredientsPage"
-import { getIngredients, deleteIngredient, updateIngredient } from "../../api"
+import {
+  getIngredients,
+  getUnits,
+  deleteIngredient,
+  updateIngredient,
+} from "../../api"
 
 vi.mock("../../api")
 
@@ -25,6 +30,14 @@ const ingredients = [
   },
 ]
 
+const units = {
+  g: "mass",
+  kg: "mass",
+  ml: "volume",
+  l: "volume",
+  each: "count",
+}
+
 const rowFor = (name) => screen.getByRole("cell", { name }).closest("tr")
 
 const clickDelete = async (user, name) =>
@@ -36,6 +49,7 @@ const clickEdit = async (user, name) =>
 beforeEach(() => {
   vi.resetAllMocks()
   getIngredients.mockResolvedValue(ingredients)
+  getUnits.mockResolvedValue(units)
 })
 
 describe("IngredientsPage update ingredient", () => {
