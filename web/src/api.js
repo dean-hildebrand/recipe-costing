@@ -41,3 +41,9 @@ export const createIngredient = (ingredient) =>
   request('/ingredients', { method: 'POST', body: ingredient })
 export const deleteIngredient = (id) =>
   request(`/ingredients/${id}`, { method: 'DELETE' })
+export const updateIngredient = (id, ingredient) => {
+  return request(`/ingredients/${id}`, {
+    method: 'PUT',
+    body: ingredient,
+  })
+}

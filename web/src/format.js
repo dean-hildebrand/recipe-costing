@@ -8,6 +8,12 @@ export const formatCents = (cents) => {
   return eur.format(cents / 100)
 }
 
+export const centsToEuros = (cents) => {
+  if (cents == null) return ''
+  const convertedCents = cents / 100
+  return convertedCents.toFixed(2)
+}
+
 export const eurosToCents = (price) => {
   if (typeof price !== 'string') return null
 
