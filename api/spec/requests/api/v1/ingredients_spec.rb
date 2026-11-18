@@ -129,6 +129,14 @@ RSpec.describe "Api::V1::Ingredients", type: :request do
       expect(rice.reload.yield_percent).to eq(100)
     end
 
+    it "returns 422 when changing the unit's dimension while a recipe uses it" do
+      patch api_v1_ingredient_path(rice), params: { ingredient: { purchase_unit: "each" } }, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["errors"]["purchase_unit"]).to include(/Parmesan Risotto/)
+      expect(rice.reload.purchase_unit).to eq("kg")
+    end
+
     it "returns 404 for an unknown id" do
       patch api_v1_ingredient_path(id: 0), params: { ingredient: { purchase_price_cents: 1 } }, as: :json
 
