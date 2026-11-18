@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { getRecipes } from "../api"
 import RecipesTable from "../components/recipes/RecipesTable"
 
-const RecipePage = () => {
+const RecipePage = ({ onSelectRecipe }) => {
   const [recipes, setRecipes] = useState(null)
   const [error, setError] = useState(null)
 
@@ -21,7 +21,7 @@ const RecipePage = () => {
   if (error) return <p>Couldn't load recipes: {error.message}</p>
   if (!recipes) return <p>Loading...</p>
 
-  return <RecipesTable recipes={recipes} />
+  return <RecipesTable recipes={recipes} onSelectRecipe={onSelectRecipe} />
 }
 
 export default RecipePage

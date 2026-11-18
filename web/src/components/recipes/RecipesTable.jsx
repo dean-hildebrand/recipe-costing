@@ -1,5 +1,5 @@
 import RecipeTableRow from "./RecipeTableRow"
-const RecipesTable = ({ recipes }) => {
+const RecipesTable = ({ recipes, onSelectRecipe }) => {
   return (
     <table>
       <thead>
@@ -11,7 +11,11 @@ const RecipesTable = ({ recipes }) => {
       </thead>
       <tbody>
         {recipes.map((recipe) => (
-          <RecipeTableRow key={recipe.id} recipe={recipe} />
+          <RecipeTableRow
+            key={recipe.id}
+            recipe={recipe}
+            onSelectRecipe={onSelectRecipe}
+          />
         ))}
       </tbody>
     </table>
