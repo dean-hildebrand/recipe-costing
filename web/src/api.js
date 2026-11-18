@@ -36,6 +36,8 @@ export const getUnits = () => request('/units')
 // Recipe endpoints
 export const getRecipes = () => request('/recipes')
 export const getRecipe = (id) => request(`/recipes/${id}`)
+export const previewRecipe = (recipe) =>
+  request('/recipes/preview', { method: 'POST', body: recipe })
 
 // Ingredient endpoints
 export const getIngredients = () => request('/ingredients')
