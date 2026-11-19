@@ -75,6 +75,22 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }))
   }
 
+  const removeHandler = (key) => {
+    setRecipeFormData((prev) => ({
+      ...prev,
+      lines: prev.lines.flatMap((line) => {
+        if (key === line.key) {
+          if (line.ingredient_id) {
+            return [{ ...line, _destroy: true }]
+          } else {
+            return []
+          }
+        }
+        return [line]
+      }),
+    }))
+  }
+
   if (error) return <p>Couldn't load recipe: {error.message}</p>
   if (!recipe) return <p>Loading...</p>
 
@@ -99,38 +115,47 @@ const RecipeEditor = ({ recipeId, onBack }) => {
           Notes:
           <input name="notes" value={notes} onChange={handleChange} />
         </label>
-        {lines.map(({ key, ingredient_id, quantity, unit }) => (
-          <label>
-            Ingredients:
-            <div key={key}>
-              <select
-                name="ingredient_id"
-                value={ingredient_id}
-                onChange={(e) => handleLineChange(key, e)}
-              >
-                {ingredients.map((i) => (
-                  <option key={i.id} value={i.id}>
-                    {i.name}
-                  </option>
-                ))}
-              </select>
-              <input
-                name="quantity"
-                value={quantity}
-                onChange={(e) => handleLineChange(key, e)}
-              />
-              <select
-                name="unit"
-                value={unit}
-                onChange={(e) => handleLineChange(key, e)}
-              >
-                {Object.keys(units).map((u) => (
-                  <option key={u}>{u}</option>
-                ))}
-              </select>
-            </div>
-          </label>
-        ))}
+        <label>
+          Ingredients:
+          {lines
+            .filter((line) => line._destroy != true)
+            .map(({ key, ingredient_id, quantity, unit }) => (
+              <div key={key}>
+                <select
+                  name="ingredient_id"
+                  value={ingredient_id}
+                  onChange={(e) => handleLineChange(key, e)}
+                >
+                  {ingredients.map((i) => (
+                    <option key={i.id} value={i.id}>
+                      {i.name}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  name="quantity"
+                  value={quantity}
+                  onChange={(e) => handleLineChange(key, e)}
+                />
+                <select
+                  name="unit"
+                  value={unit}
+                  onChange={(e) => handleLineChange(key, e)}
+                >
+                  {Object.keys(units).map((u) => (
+                    <option key={u}>{u}</option>
+                  ))}
+                </select>
+                <button
+                  className="danger"
+                  type="button"
+                  onClick={() => removeHandler(key)}
+                >
+                  x
+                </button>
+              </div>
+            ))}
+        </label>
       </form>
     </>
   )
