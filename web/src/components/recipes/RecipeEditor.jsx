@@ -56,7 +56,8 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }
     load()
   }, [recipeId])
-
+  console.log("notes", notes)
+  console.log("notes length", notes.length)
   const handleChange = (e) => {
     const { name, value } = e.target
     setRecipeFormData((prev) => ({
@@ -91,6 +92,26 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }))
   }
 
+  // lines: recipe_ingredients.map(({ id, ingredient_id, quantity, unit }) => ({
+  //   key: crypto.randomUUID(),
+  //   id,
+  //   ingredient_id,
+  //   quantity,
+  //   unit,
+  // console.log("recipeFormData.lines", recipeFormData.lines)
+  const handleAddLine = () => {
+    const newLine = {
+      key: crypto.randomUUID(),
+      ingredient_id: "",
+      quantity: "",
+      unit: "",
+    }
+    setRecipeFormData((prev) => ({
+      ...prev,
+      lines: [...prev.lines, newLine],
+    }))
+  }
+
   if (error) return <p>Couldn't load recipe: {error.message}</p>
   if (!recipe) return <p>Loading...</p>
 
@@ -98,34 +119,46 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     <>
       <button onClick={onBack}>Back</button>
       <h2>{recipe.name}</h2>
-      <form>
-        <label>
-          Recipe Name:
-          <input name="name" value={name} onChange={handleChange} />
-        </label>
-        <label>
-          Servings:
-          <input name="servings" value={servings} onChange={handleChange} />
-        </label>
-        <label>
-          Menu price:
-          <input name="menu_price" value={menu_price} onChange={handleChange} />
-        </label>
-        <label>
-          Notes:
-          <input name="notes" value={notes} onChange={handleChange} />
-        </label>
-        <label>
-          Ingredients:
+      <form className="recipe">
+        <div className="main-recipe">
+          <label>
+            Recipe Name:
+            <input name="name" value={name} onChange={handleChange} />
+          </label>
+          <label>
+            Servings:
+            <input name="servings" value={servings} onChange={handleChange} />
+          </label>
+          <label>
+            Menu price:
+            <input
+              name="menu_price"
+              value={menu_price}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Notes:
+            <textarea
+              name="notes"
+              value={notes}
+              rows={(notes.length + 10) / 35}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+        <div className="recipe-ingredients">
+          <span className="field-heading">Ingredients:</span>
           {lines
             .filter((line) => line._destroy != true)
             .map(({ key, ingredient_id, quantity, unit }) => (
-              <div key={key}>
+              <div className="ingredient-row" key={key}>
                 <select
                   name="ingredient_id"
                   value={ingredient_id}
                   onChange={(e) => handleLineChange(key, e)}
                 >
+                  <option value="">Choose ingredient...</option>
                   {ingredients.map((i) => (
                     <option key={i.id} value={i.id}>
                       {i.name}
@@ -142,6 +175,7 @@ const RecipeEditor = ({ recipeId, onBack }) => {
                   value={unit}
                   onChange={(e) => handleLineChange(key, e)}
                 >
+                  <option value="">Choose unit...</option>
                   {Object.keys(units).map((u) => (
                     <option key={u}>{u}</option>
                   ))}
@@ -155,7 +189,10 @@ const RecipeEditor = ({ recipeId, onBack }) => {
                 </button>
               </div>
             ))}
-        </label>
+          <button className="add-line" type="button" onClick={handleAddLine}>
+            Add Ingredient
+          </button>
+        </div>
       </form>
     </>
   )
