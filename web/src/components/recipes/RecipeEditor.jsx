@@ -30,6 +30,23 @@ const toFormState = ({
   })),
 })
 
+const getIngredient = (ingredientId, ingredients) => {
+  if (!ingredientId) return null
+  const ingredient = ingredients.find(
+    (ingredient) => Number(ingredientId) === ingredient.id,
+  )
+  return ingredient
+}
+
+const compatibleUnits = (ingredientId, ingredients, units) => {
+  const ingredient = getIngredient(ingredientId, ingredients)
+  const dimension = units[ingredient?.purchase_unit]
+  const matchingUnits = Object.entries(units).filter(([, dim]) => {
+    return dim === dimension
+  })
+  return matchingUnits.map(([name]) => name)
+}
+
 const RecipeEditor = ({ recipeId, onBack }) => {
   const [ingredients, setIngredients] = useState(null)
   const [units, setUnits] = useState(null)
@@ -56,8 +73,7 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }
     load()
   }, [recipeId])
-  console.log("notes", notes)
-  console.log("notes length", notes.length)
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setRecipeFormData((prev) => ({
@@ -68,10 +84,20 @@ const RecipeEditor = ({ recipeId, onBack }) => {
 
   const handleLineChange = (key, e) => {
     const { name, value } = e.target
+    const newIngredient = getIngredient(value, ingredients)
+
     setRecipeFormData((prev) => ({
       ...prev,
       lines: prev.lines.map((line) =>
-        line.key === key ? { ...line, [name]: value } : line,
+        line.key === key
+          ? name === "ingredient_id"
+            ? {
+                ...line,
+                ingredient_id: newIngredient?.id,
+                unit: newIngredient?.purchase_unit,
+              }
+            : { ...line, [name]: value }
+          : line,
       ),
     }))
   }
@@ -92,13 +118,6 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }))
   }
 
-  // lines: recipe_ingredients.map(({ id, ingredient_id, quantity, unit }) => ({
-  //   key: crypto.randomUUID(),
-  //   id,
-  //   ingredient_id,
-  //   quantity,
-  //   unit,
-  // console.log("recipeFormData.lines", recipeFormData.lines)
   const handleAddLine = () => {
     const newLine = {
       key: crypto.randomUUID(),
@@ -176,9 +195,11 @@ const RecipeEditor = ({ recipeId, onBack }) => {
                   onChange={(e) => handleLineChange(key, e)}
                 >
                   <option value="">Choose unit...</option>
-                  {Object.keys(units).map((u) => (
-                    <option key={u}>{u}</option>
-                  ))}
+                  {compatibleUnits(ingredient_id, ingredients, units).map(
+                    (u) => (
+                      <option key={u}>{u}</option>
+                    ),
+                  )}
                 </select>
                 <button
                   className="danger"
