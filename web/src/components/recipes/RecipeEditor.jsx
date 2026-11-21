@@ -84,7 +84,8 @@ const RecipeEditor = ({ recipeId, onBack }) => {
 
   const handleLineChange = (key, e) => {
     const { name, value } = e.target
-    const newIngredient = getIngredient(value, ingredients)
+    const newIngredient =
+      name === "ingredient_id" ? getIngredient(value, ingredients) : null
 
     setRecipeFormData((prev) => ({
       ...prev,
@@ -93,8 +94,8 @@ const RecipeEditor = ({ recipeId, onBack }) => {
           ? name === "ingredient_id"
             ? {
                 ...line,
-                ingredient_id: newIngredient?.id,
-                unit: newIngredient?.purchase_unit,
+                ingredient_id: newIngredient?.id ?? "",
+                unit: newIngredient?.purchase_unit ?? "",
               }
             : { ...line, [name]: value }
           : line,
@@ -107,7 +108,7 @@ const RecipeEditor = ({ recipeId, onBack }) => {
       ...prev,
       lines: prev.lines.flatMap((line) => {
         if (key === line.key) {
-          if (line.ingredient_id) {
+          if (line.id) {
             return [{ ...line, _destroy: true }]
           } else {
             return []
