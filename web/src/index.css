@@ -132,6 +132,15 @@ button.danger:hover:not(:disabled) {
   gap: 6px;
 }
 
+.totals {
+  display: flex;
+  justify-content: space-around;
+
+  .totals-item {
+    padding-left: 0.825em;
+  }
+}
+
 /* Form */
 form {
   display: flex;
@@ -285,3 +294,4 @@ tbody tr:last-child td {
 tbody tr:hover td {
   background: var(--accent-bg);
 }
+

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { getRecipe, getIngredients, getUnits } from "../../api"
-import { centsToEuros } from "../../format"
+import { getRecipe, getIngredients, getUnits, previewRecipe } from "../../api"
+import { centsToEuros, formatCents, eurosToCents } from "../../format"
 
 const EMPTY_FORM = {
   name: "",
@@ -30,6 +30,29 @@ const toFormState = ({
   })),
 })
 
+const previewableLines = (lines) => {
+  const newLines = lines.filter(
+    (line) =>
+      line._destroy != true &&
+      line.ingredient_id != "" &&
+      line.quantity != "" &&
+      line.unit != "",
+  )
+  return newLines
+}
+
+const toPayload = ({ lines, menu_price, ...rest }) => ({
+  ...rest,
+  menu_price_cents: eurosToCents(menu_price),
+  recipe_ingredients_attributes: previewableLines(lines).map(
+    ({ ingredient_id, quantity, unit }) => ({
+      ingredient_id,
+      quantity,
+      unit,
+    }),
+  ),
+})
+
 const getIngredient = (ingredientId, ingredients) => {
   if (!ingredientId) return null
   const ingredient = ingredients.find(
@@ -54,6 +77,7 @@ const RecipeEditor = ({ recipeId, onBack }) => {
   const [error, setError] = useState(null)
   const [recipeFormData, setRecipeFormData] = useState(EMPTY_FORM)
   const { name, servings, menu_price, notes, lines } = recipeFormData
+  const [preview, setPreview] = useState(null)
 
   useEffect(() => {
     const load = async () => {
@@ -66,6 +90,7 @@ const RecipeEditor = ({ recipeId, onBack }) => {
         setIngredients(ingredients)
         setUnits(units)
         setRecipe(recipe)
+        setPreview(recipe)
         setRecipeFormData(toFormState(recipe))
       } catch (error) {
         setError(error)
@@ -132,6 +157,16 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }))
   }
 
+  const handleLoggingPreview = async (formData) => {
+    try {
+      const payload = toPayload(formData)
+      const previewResult = await previewRecipe(payload)
+      setPreview(previewResult)
+    } catch (error) {
+      setError(error.errors ?? { base: [error.message] })
+    }
+  }
+
   if (error) return <p>Couldn't load recipe: {error.message}</p>
   if (!recipe) return <p>Loading...</p>
 
@@ -139,6 +174,42 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     <>
       <button onClick={onBack}>Back</button>
       <h2>{recipe.name}</h2>
+      <button
+        type="button"
+        onClick={() => handleLoggingPreview(recipeFormData)}
+      >
+        Preview POST
+      </button>
+      {preview && (
+        <div className="totals">
+          <p>
+            Batch cost:
+            <span className="totals-item">
+              {formatCents(preview.batch_cost_cents)}
+            </span>
+          </p>
+          <p>
+            Plate cost:
+            <span className="totals-item">
+              {formatCents(preview.plate_cost_cents)}
+            </span>
+          </p>
+          <p>
+            Foodcost percentage:
+            <span className="totals-item">
+              {preview.food_cost_percent
+                ? preview.food_cost_percent + "%"
+                : "-"}
+            </span>
+          </p>
+          <p>
+            Margin:
+            <span className="totals-item">
+              {formatCents(preview.margin_cents)}
+            </span>
+          </p>
+        </div>
+      )}
       <form className="recipe">
         <div className="main-recipe">
           <label>

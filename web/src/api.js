@@ -38,6 +38,8 @@ export const getRecipes = () => request('/recipes')
 export const getRecipe = (id) => request(`/recipes/${id}`)
 export const previewRecipe = (recipe) =>
   request('/recipes/preview', { method: 'POST', body: recipe })
+export const updateRecipe = (id, recipe) =>
+  request(`/recipes/${id}`, { method: 'PATCH', body: recipe })
 
 // Ingredient endpoints
 export const getIngredients = () => request('/ingredients')
