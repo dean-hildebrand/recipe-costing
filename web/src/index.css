@@ -139,6 +139,11 @@ button.danger:hover:not(:disabled) {
   .totals-item {
     padding-left: 0.825em;
   }
+
+  /* last good numbers, kept on screen while the current input can't be costed */
+  &.stale {
+    opacity: 0.5;
+  }
 }
 
 /* Form */
