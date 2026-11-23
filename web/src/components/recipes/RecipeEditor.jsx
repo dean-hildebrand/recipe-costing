@@ -75,6 +75,7 @@ const RecipeEditor = ({ recipeId, onBack }) => {
   const [units, setUnits] = useState(null)
   const [recipe, setRecipe] = useState(null)
   const [error, setError] = useState(null)
+  const [previewError, setPreviewError] = useState({})
   const [recipeFormData, setRecipeFormData] = useState(EMPTY_FORM)
   const { name, servings, menu_price, notes, lines } = recipeFormData
   const [preview, setPreview] = useState(null)
@@ -98,6 +99,25 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }
     load()
   }, [recipeId])
+
+  useEffect(() => {
+    if (!recipe) return
+    const updatePreviewCosts = async () => {
+      try {
+        const payload = toPayload(recipeFormData)
+        const previewResult = await previewRecipe(payload)
+        setPreview(previewResult)
+        setPreviewError({})
+      } catch (error) {
+        // 422s carry { field: [messages] }; network errors and 404s don't
+        setPreviewError(error.errors ?? { base: [error.message] })
+      }
+    }
+    const timer = setTimeout(() => {
+      updatePreviewCosts()
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [recipe, recipeFormData])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -157,15 +177,12 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     }))
   }
 
-  const handleLoggingPreview = async (formData) => {
-    try {
-      const payload = toPayload(formData)
-      const previewResult = await previewRecipe(payload)
-      setPreview(previewResult)
-    } catch (error) {
-      setError(error.errors ?? { base: [error.message] })
-    }
-  }
+  // Nested line errors come back as "recipe_ingredients" or
+  // "recipe_ingredients.quantity"
+  const lineErrors = Object.entries(previewError)
+    .filter(([field]) => field.startsWith("recipe_ingredients"))
+    .flatMap(([, messages]) => messages)
+  const hasPreviewError = Object.keys(previewError).length > 0
 
   if (error) return <p>Couldn't load recipe: {error.message}</p>
   if (!recipe) return <p>Loading...</p>
@@ -174,14 +191,13 @@ const RecipeEditor = ({ recipeId, onBack }) => {
     <>
       <button onClick={onBack}>Back</button>
       <h2>{recipe.name}</h2>
-      <button
-        type="button"
-        onClick={() => handleLoggingPreview(recipeFormData)}
-      >
-        Preview POST
-      </button>
+      {previewError.base && (
+        <p className="field-error">
+          Couldn't update costs: {previewError.base.join(", ")}
+        </p>
+      )}
       {preview && (
-        <div className="totals">
+        <div className={hasPreviewError ? "totals stale" : "totals"}>
           <p>
             Batch cost:
             <span className="totals-item">
@@ -220,6 +236,9 @@ const RecipeEditor = ({ recipeId, onBack }) => {
             Servings:
             <input name="servings" value={servings} onChange={handleChange} />
           </label>
+          {previewError.servings && (
+            <p className="field-error">{previewError.servings.join(", ")}</p>
+          )}
           <label>
             Menu price:
             <input
@@ -228,6 +247,11 @@ const RecipeEditor = ({ recipeId, onBack }) => {
               onChange={handleChange}
             />
           </label>
+          {previewError.menu_price_cents && (
+            <p className="field-error">
+              {previewError.menu_price_cents.join(", ")}
+            </p>
+          )}
           <label>
             Notes:
             <textarea
@@ -240,6 +264,11 @@ const RecipeEditor = ({ recipeId, onBack }) => {
         </div>
         <div className="recipe-ingredients">
           <span className="field-heading">Ingredients:</span>
+          {lineErrors.map((message) => (
+            <p className="field-error" key={message}>
+              {message}
+            </p>
+          ))}
           {lines
             .filter((line) => line._destroy != true)
             .map(({ key, ingredient_id, quantity, unit }) => (
